@@ -1,4 +1,4 @@
-package com.example.weatherforecast;
+package com.tlenclos.weatherforecast;
 
 import android.os.Bundle;
 import android.app.Activity;
