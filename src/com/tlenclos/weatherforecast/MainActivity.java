@@ -1,5 +1,7 @@
 package com.tlenclos.weatherforecast;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -8,13 +10,37 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 
-public class MainActivity extends Activity {
-
+public class MainActivity extends Activity   {
+	private Tab tab;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+
+	    // Create the actionbar
+        ActionBar actionBar = getActionBar();
+ 
+        // Hide Actionbar Icon
+        actionBar.setDisplayShowHomeEnabled(false);
+ 
+        // Hide Actionbar Title
+        actionBar.setDisplayShowTitleEnabled(false);
+ 
+        // Create Actionbar Tabs
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+ 
+        // Create first Tab
+        tab = actionBar.newTab().setTabListener(new HomeTab());
+        tab.setText("Home");
+        actionBar.addTab(tab);
+ 
+        // Create Second Tab
+        tab = actionBar.newTab().setTabListener(new WeekTab());
+        // Set Tab Title
+        tab.setText("Week");
+        actionBar.addTab(tab);
 		
+		// Get data
 		if (isOnline()) {
 			WeatherWebservice weatherWS = new WeatherWebservice(this);
 			weatherWS.execute();
