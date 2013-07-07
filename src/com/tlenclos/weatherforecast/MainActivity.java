@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener   {
 	private Tab tab;
@@ -29,7 +30,7 @@ public class MainActivity extends Activity implements LocationListener   {
  
         // Create first Tab
         tab = actionBar.newTab().setTabListener(new HomeTab());
-        tab.setText("Home");
+        tab.setText("Today");
         actionBar.addTab(tab);
  
         // Create Second Tab
@@ -40,23 +41,17 @@ public class MainActivity extends Activity implements LocationListener   {
         
      	// Geoloc user
  		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
- 		
-		// Get weather data
-		if (isOnline()) {
-			WeatherWebservice weatherWS = new WeatherWebservice(this);
-			weatherWS.execute();
-		} else {
-			Log.d("AppWeather", "Device is offline");
-		}
 	}
 	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
 		Log.v("AppWeather", "Starting app");
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1000, this);
+		
+		if (locationManager != null) {
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1000, this);
+		}
 	}
 
 	@Override
@@ -66,11 +61,14 @@ public class MainActivity extends Activity implements LocationListener   {
 		return true;
 	}
 	
-	public void updateWeatherData(String result) {
-		if (result != null) {
-			Log.d("AppWeather", result);
+	public void updateWeatherData(Weather result) {
+		if (result != null && result.isFetched) {
+			// Update UI
+			Log.d("AppWeather",  "Place & Temperature : " + result.place +", "+ result.temperature);
+			
 		} else {
 			Log.d("AppWeather", "Webservice returned empty result");
+			Toast.makeText(this.getApplicationContext(), "Error while getting weather data", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -87,23 +85,33 @@ public class MainActivity extends Activity implements LocationListener   {
 	public void onLocationChanged(Location location) {
 		Log.v("AppWeather", location.getLatitude() + " - " + location.getLongitude());
 		locationManager.removeUpdates(this);
+		
+		// Get weather data
+		if (isOnline()) {
+			WeatherWebservice weatherWS = new WeatherWebservice(this, location);
+			weatherWS.execute();
+		} else {
+			Log.d("AppWeather", "Device is offline");
+		}
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
+		Log.v("AppWeather", provider);
 		
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-		
+		Log.v("AppWeather", provider);
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
+		Log.v("AppWeather", provider+ " changed");
 		
 	}
 }
