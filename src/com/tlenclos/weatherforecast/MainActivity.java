@@ -40,6 +40,10 @@ public class MainActivity extends Activity {
         actionBar.addTab(tab);
 	}
 	
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub

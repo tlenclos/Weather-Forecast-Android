@@ -27,6 +27,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	private TextView humidity;
 	private TextView time;
 	private ImageView icon;
+	private Weather dayWeather;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,27 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
     	Time now = new Time();
     	now.setToNow();
     	time.setText(String.format("%02d:%02d", now.hour, now.minute));
+    }
+    
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.v("AppWeather", "Saving instanceState");
+        
+        if (dayWeather != null) {
+        	outState.putSerializable("dayWeather", dayWeather);
+        }
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.v("AppWeather", "Recovering data from instanceState");
+        
+        if (savedInstanceState != null) {
+            // Restore last state for checked position.
+            dayWeather = (Weather) savedInstanceState.getSerializable("dayWeather");
+            updateUIwithWeather(dayWeather);
+        }
     }
     
     public void onTabSelected(Tab tab, FragmentTransaction ft) {
@@ -102,14 +124,9 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	            public void onTaskDone(Weather result) {
 	                // Update UI
 	        		if (result != null && result.isFetched) {
+	        			dayWeather = result;
 	        			// Update UI
-	        			city.setText(result.place);
-	        			temperature.setText(String.format("%.1f¡C", result.temperature));
-	        			wind.setText(result.windSpeed+"km/h");
-	        			humidity.setText(result.humidity+"%");
-	        			date.setText(result.day.toString());
-	        			if (result.iconUri != null)
-	        				new DownloadImageTask(icon).execute(result.iconUri);
+	        			updateUIwithWeather(dayWeather);
 	        		}
 	            }
 	        }, location);
@@ -117,6 +134,17 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 		} else {
 			Toast.makeText(this.getActivity().getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
 		}
+	}
+	
+	public void updateUIwithWeather(Weather weather) {
+		city.setText(weather.place);
+		temperature.setText(String.format("%.1f¡C", weather.temperature));
+		wind.setText(weather.windSpeed+"km/h");
+		humidity.setText(weather.humidity+"%");
+		date.setText(weather.day.toString());
+		
+		if (weather.iconUri != null)
+			new DownloadImageTask(icon).execute(weather.iconUri);
 	}
  
     public interface FragmentCallback {

@@ -1,11 +1,19 @@
 package com.tlenclos.weatherforecast;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import android.R.bool;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
-public class Weather {
+public class Weather implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7468907373314597663L;
+	
 	public String place;
 	public double temperature;
 	public double humidity;
