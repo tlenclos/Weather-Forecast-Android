@@ -9,19 +9,23 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.tlenclos.weatherforecast.HomeTab.FragmentCallback;
+
+import android.app.Fragment;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
 public class WeatherWebservice extends AsyncTask<Void, Void, Weather> {
-	MainActivity activityRef;
+	private FragmentCallback mFragmentCallback;
+	String apiUrlIcon = "http://openweathermap.org/img/w/";
 	String apiUrlFormat = "http://api.openweathermap.org/data/2.1/find/city?&lat=%f&lon=%f&cnt=1&APPID=5d2eef1e303470228dcf653b4f989499";
 	String apiUrl;
 	Location location;
 	
-	public WeatherWebservice(MainActivity activityRef, Location location) {
-		this.activityRef = activityRef;
+	public WeatherWebservice(FragmentCallback fragmentCallback, Location location) {
+		mFragmentCallback = fragmentCallback;
 		this.location = location;
 		this.apiUrl = String.format(apiUrlFormat.toString(), location.getLatitude(), location.getLongitude());
 	}
@@ -59,11 +63,11 @@ public class WeatherWebservice extends AsyncTask<Void, Void, Weather> {
 			if (list.length() > 0) {
 				JSONObject weatherData = list.getJSONObject(0);
 				dayWeather.place = weatherData.getString("name");
-				dayWeather.temperature = weatherData.getJSONObject("main").getDouble("temp");
+				dayWeather.temperature = kelvinToCelsius(weatherData.getJSONObject("main").getDouble("temp"));
 				dayWeather.humidity = weatherData.getJSONObject("main").getDouble("humidity");
 				dayWeather.pressure = weatherData.getJSONObject("main").getInt("pressure");
 				dayWeather.windSpeed = weatherData.getJSONObject("wind").getDouble("speed");
-				dayWeather.iconName = weatherData.getJSONArray("weather").getJSONObject(0).getString("icon")+".jpg";
+				dayWeather.iconUri = apiUrlIcon+weatherData.getJSONArray("weather").getJSONObject(0).getString("icon")+".png";
 				dayWeather.isFetched = true;
 			}
 			
@@ -74,7 +78,11 @@ public class WeatherWebservice extends AsyncTask<Void, Void, Weather> {
 		return dayWeather;
 	}
 	
+	public double kelvinToCelsius(double kelvin) {
+		return kelvin - 273.15;
+	}
+	
 	protected void onPostExecute(Weather result) {
-		activityRef.updateWeatherData(result); // TODO : Check to see if the activity is still available.
+		mFragmentCallback.onTaskDone(result);
 	}
 }

@@ -11,7 +11,7 @@ public class Weather {
 	public double humidity;
 	public double windSpeed;
 	public int pressure;
-	public String iconName;
+	public String iconUri;
 	public Date day;
 	public boolean isFetched;
 	
