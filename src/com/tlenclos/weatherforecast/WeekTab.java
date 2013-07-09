@@ -2,25 +2,26 @@ package com.tlenclos.weatherforecast;
 
 import java.util.ArrayList;
 
+import com.tlenclos.weatherforecast.HomeTab.FragmentCallback;
+import com.tlenclos.weatherforecast.models.User;
+import com.tlenclos.weatherforecast.models.Weather;
+
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
  
 public class WeekTab extends Fragment implements TabListener {
  
     private Fragment mFragment;
-    
-    // Initialize the array
-    String[] monthsArray = { "JAN", "FEB", "MAR", "APR", "MAY", "JUNE", "JULY",
- "AUG", "SEPT", "OCT", "NOV", "DEC" };
- 
-    // Declare the UI components
     private ListView daysListView;
-    private ArrayAdapter arrayAdapter;
+    private CustomListAdapter adapter;
+    ArrayList<Weather> weathers;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,24 +29,29 @@ public class WeekTab extends Fragment implements TabListener {
         // Get the view from fragment1.xml
         getActivity().setContentView(R.layout.week_tab);
 
-        ArrayList<Weather> weathers = getListData();
+        weathers = new ArrayList<Weather>();
         daysListView = (ListView) this.getActivity().findViewById(R.id.days_list);
-        daysListView.setAdapter(new CustomListAdapter(this.getActivity(), weathers));
-    }
- 
-    private ArrayList<Weather> getListData() {
-        ArrayList<Weather> results = new ArrayList<Weather>();
-        Weather newsData = new Weather();
-        newsData.temperature = 10;
-        newsData.pressure = 12;
-        results.add(newsData);
- 
-        newsData = new Weather();
-        newsData.temperature = 10;
-        newsData.pressure = 12;
-        results.add(newsData);
+        adapter = new CustomListAdapter(this.getActivity(), weathers);
+        daysListView.setAdapter(adapter);
         
-        return results;
+        // Get weather data
+        if (User.getInstance().location != null) {
+    		if (((MainActivity) this.getActivity()).isOnline()) {
+    			Toast.makeText(this.getActivity().getApplicationContext(), "Fetching weather data...", Toast.LENGTH_SHORT).show();
+    			
+    			WeatherWebservice weatherWS = new WeatherWebservice(new FragmentCallback() {
+    	            @Override
+    	            public void onTaskDone(ArrayList<Weather> result) {
+    	                weathers.clear();
+    	                weathers.addAll(result);
+    	                adapter.notifyDataSetChanged();
+    	            }
+    	        }, User.getInstance().location, false);
+    			weatherWS.execute();
+    		} else {
+    			Toast.makeText(this.getActivity().getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
+    		}
+        }
     }
     
     public void onTabSelected(Tab tab, FragmentTransaction ft) {

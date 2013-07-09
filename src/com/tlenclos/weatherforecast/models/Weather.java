@@ -1,4 +1,4 @@
-package com.tlenclos.weatherforecast;
+package com.tlenclos.weatherforecast.models;
 
 import java.io.Serializable;
 import java.util.Date;

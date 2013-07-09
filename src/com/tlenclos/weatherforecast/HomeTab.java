@@ -1,5 +1,10 @@
 package com.tlenclos.weatherforecast;
 
+import java.util.ArrayList;
+
+import com.tlenclos.weatherforecast.models.User;
+import com.tlenclos.weatherforecast.models.Weather;
+
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Fragment;
@@ -96,40 +101,30 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
         // TODO Auto-generated method stub
  
     }
-    
-	public boolean isOnline() {
-		if (this.getActivity() != null) {
-		    ConnectivityManager cm = (ConnectivityManager) this.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-		    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-		    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-		        return true;
-		    }	
-		}
-		
-	    return false;
-	}
+   
 	
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
 		Log.v("AppWeather", location.getLatitude() + " - " + location.getLongitude());
+		User.getInstance().location = location;
 		locationManager.removeUpdates(this);
 		
 		// Get weather data
-		if (isOnline()) {
+		if (((MainActivity) this.getActivity()).isOnline()) {
 			Toast.makeText(this.getActivity().getApplicationContext(), "Fetching weather data...", Toast.LENGTH_SHORT).show();
 			
 			WeatherWebservice weatherWS = new WeatherWebservice(new FragmentCallback() {
 	            @Override
-	            public void onTaskDone(Weather result) {
+	            public void onTaskDone(ArrayList<Weather> result) {
 	                // Update UI
-	        		if (result != null && result.isFetched) {
-	        			dayWeather = result;
+	        		if (result.size() > 0 && result.get(0).isFetched) {
+	        			dayWeather = result.get(0);
 	        			// Update UI
 	        			updateUIwithWeather(dayWeather);
 	        		}
 	            }
-	        }, location);
+	        }, location, true);
 			weatherWS.execute();
 		} else {
 			Toast.makeText(this.getActivity().getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
@@ -138,7 +133,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	
 	public void updateUIwithWeather(Weather weather) {
 		city.setText(weather.place);
-		temperature.setText(String.format("%.1f¡C", weather.temperature));
+		temperature.setText(String.format("%.1f°C", weather.temperature));
 		wind.setText(weather.windSpeed+"km/h");
 		humidity.setText(weather.humidity+"%");
 		date.setText(weather.day.toString());
@@ -148,7 +143,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	}
  
     public interface FragmentCallback {
-        public void onTaskDone(Weather result);
+        public void onTaskDone(ArrayList<Weather> result);
     }
 
 	@Override

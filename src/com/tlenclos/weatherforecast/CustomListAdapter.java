@@ -1,5 +1,6 @@
 package com.tlenclos.weatherforecast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -7,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.tlenclos.weatherforecast.models.Weather;
 
 public class CustomListAdapter extends BaseAdapter {
 	 
@@ -41,24 +45,27 @@ public class CustomListAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.list_row_day, null);
             holder = new ViewHolder();
             holder.dayView = (TextView) convertView.findViewById(R.id.day);
-            holder.temperatureView = (TextView) convertView.findViewById(R.id.temperature);
-            holder.pressureView = (TextView) convertView.findViewById(R.id.pressure);
+            holder.infosView = (TextView) convertView.findViewById(R.id.infos);
+            holder.iconView = (ImageView) convertView.findViewById(R.id.icon);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
  
-        holder.dayView.setText(listData.get(position).day.toString());
-        holder.temperatureView.setText(""+listData.get(position).temperature);
-        holder.pressureView.setText(""+listData.get(position).pressure);
- 
+        Weather weather = listData.get(position);
+        holder.dayView.setText(new SimpleDateFormat("EEEE").format(weather.day));
+        holder.infosView.setText(String.format("%.1f°C / %d", weather.temperature, weather.pressure));
+        
+        if (weather.iconUri != null)
+			new DownloadImageTask(holder.iconView).execute(weather.iconUri);
+        
         return convertView;
     }
  
     static class ViewHolder {
-        TextView dayView;
-        TextView temperatureView;
-        TextView pressureView;
+		TextView dayView;
+        TextView infosView;
+        ImageView iconView;
     }
  
 }
