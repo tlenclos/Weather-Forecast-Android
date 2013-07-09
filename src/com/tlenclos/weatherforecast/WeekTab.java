@@ -44,7 +44,7 @@ public class WeekTab extends Fragment implements TabListener {
     	                weathers.addAll(result);
     	                adapter.notifyDataSetChanged();
     	            }
-    	        }, User.getInstance().location, false);
+    	        }, User.getInstance().location, false, null);
     			weatherWS.execute();
     		} else {
     			Toast.makeText(this.getActivity().getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();

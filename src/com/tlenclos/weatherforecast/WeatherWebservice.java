@@ -22,19 +22,27 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 	String apiUrlIcon = "http://openweathermap.org/img/w/";
 	String apiUrlFormat = "http://api.openweathermap.org/data/2.1/find/city?&lat=%f&lon=%f&cnt=1&APPID=5d2eef1e303470228dcf653b4f989499";
 	String apiForecastUrlFormat = "http://api.openweathermap.org/data/2.5/forecast/daily?&lat=%f&lon=%f&APPID=5d2eef1e303470228dcf653b4f989499";
+	String apiSearchCityFormat = "http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=5d2eef1e303470228dcf653b4f989499";
 	String apiUrl;
 	Location location;
 	boolean todayWeather;
+	String citySearch;
 	
-	public WeatherWebservice(FragmentCallback fragmentCallback, Location location, boolean todayWeather) {
+	public WeatherWebservice(FragmentCallback fragmentCallback, Location location, boolean todayWeather, String citySearch) {
 		mFragmentCallback = fragmentCallback;
 		this.location = location;
 		this.todayWeather = todayWeather;
-		this.apiUrl = String.format(
-				todayWeather ? apiUrlFormat.toString() : apiForecastUrlFormat.toString(),
-				location.getLatitude(),
-				location.getLongitude()
-		);
+		this.citySearch = citySearch;
+		
+		if (citySearch != null) {
+			this.apiUrl = String.format(apiSearchCityFormat.toString(), citySearch);
+		} else {
+			this.apiUrl = String.format(
+					todayWeather ? apiUrlFormat.toString() : apiForecastUrlFormat.toString(),
+					location.getLatitude(),
+					location.getLongitude()
+			);
+		}
 	}
 	
 	@Override
@@ -56,6 +64,7 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
         }
 		
 		String response = builder.toString();
+		Log.v("Response", response);
 		
 		return todayWeather ? parseTodayWeather(response) : parseWeekWeather(response);
 	}
@@ -64,14 +73,20 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 		Weather dayWeather = new Weather();
 		
 		// Parse JSON
-		JSONObject jsonObject = null;
+		JSONObject weatherData = null;
 		JSONArray list = null;
+		
 		try {
-			jsonObject = new JSONObject(response);
-			list = jsonObject.getJSONArray("list");
-			
-			if (list.length() > 0) {
-				JSONObject weatherData = list.getJSONObject(0);
+			if (citySearch != null) {
+				weatherData = new JSONObject(response);
+			} else {
+				list = new JSONObject(response).getJSONArray("list");
+				if (list.length() > 0) {
+					weatherData = list.getJSONObject(0);
+				}
+			}
+
+			if (weatherData != null) {
 				dayWeather.place = weatherData.getString("name");
 				dayWeather.temperature = kelvinToCelsius(weatherData.getJSONObject("main").getDouble("temp"));
 				dayWeather.humidity = weatherData.getJSONObject("main").getDouble("humidity");
@@ -80,7 +95,7 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 				dayWeather.iconUri = apiUrlIcon+weatherData.getJSONArray("weather").getJSONObject(0).getString("icon")+".png";
 				dayWeather.isFetched = true;
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
