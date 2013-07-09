@@ -10,14 +10,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.tlenclos.weatherforecast.HomeTab.FragmentCallback;
-import com.tlenclos.weatherforecast.models.Weather;
-
-import android.app.Fragment;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.tlenclos.weatherforecast.HomeTab.FragmentCallback;
+import com.tlenclos.weatherforecast.models.Weather;
 
 public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>> {
 	private FragmentCallback mFragmentCallback;
@@ -41,8 +39,6 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 	
 	@Override
 	protected ArrayList<Weather> doInBackground(Void... arg0) {
-		Log.d("AppWeather", "Starting Async Weather / "+apiUrl);
-		
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		HttpGet request = new HttpGet(apiUrl);
 		StringBuilder builder = null;
@@ -99,9 +95,6 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 		JSONObject jsonObject = null;
 		JSONArray list = null;
 		ArrayList<Weather> weathers = new ArrayList<Weather>();
-		
-		Log.v("AppWeather", "Hello!");
-		Log.v("AppWeather", "Response:"+response);
 		
 		try {
 			jsonObject = new JSONObject(response);

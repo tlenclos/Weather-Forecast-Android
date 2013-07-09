@@ -2,19 +2,17 @@ package com.tlenclos.weatherforecast;
 
 import java.util.ArrayList;
 
-import com.tlenclos.weatherforecast.HomeTab.FragmentCallback;
-import com.tlenclos.weatherforecast.models.User;
-import com.tlenclos.weatherforecast.models.Weather;
-
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.tlenclos.weatherforecast.HomeTab.FragmentCallback;
+import com.tlenclos.weatherforecast.models.User;
+import com.tlenclos.weatherforecast.models.Weather;
  
 public class WeekTab extends Fragment implements TabListener {
  

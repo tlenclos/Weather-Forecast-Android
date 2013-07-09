@@ -2,9 +2,6 @@ package com.tlenclos.weatherforecast;
 
 import java.util.ArrayList;
 
-import com.tlenclos.weatherforecast.models.User;
-import com.tlenclos.weatherforecast.models.Weather;
-
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Fragment;
@@ -13,14 +10,15 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.tlenclos.weatherforecast.models.User;
+import com.tlenclos.weatherforecast.models.Weather;
  
 public class HomeTab extends Fragment implements TabListener, LocationListener {
     private Fragment mFragment;
@@ -155,12 +153,10 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-		Log.v("AppWeather", "Provider enabled");
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
-		Log.v("AppWeather", "Status changed");
 	}
 }
