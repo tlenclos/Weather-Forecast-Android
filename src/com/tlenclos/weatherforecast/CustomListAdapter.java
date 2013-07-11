@@ -2,6 +2,7 @@ package com.tlenclos.weatherforecast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ public class CustomListAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.list_row_day, null);
             holder = new ViewHolder();
             holder.dayView = (TextView) convertView.findViewById(R.id.day);
+            holder.description = (TextView) convertView.findViewById(R.id.description);
             holder.infosView = (TextView) convertView.findViewById(R.id.infos);
             holder.iconView = (ImageView) convertView.findViewById(R.id.icon);
             convertView.setTag(holder);
@@ -53,8 +55,9 @@ public class CustomListAdapter extends BaseAdapter {
         }
  
         Weather weather = listData.get(position);
-        holder.dayView.setText(new SimpleDateFormat("EEEE").format(weather.day));
+        holder.dayView.setText(new SimpleDateFormat("EEEE dd", Locale.getDefault()).format(weather.day));
         holder.infosView.setText(String.format("%.1f¡C / %d", weather.temperature, weather.pressure));
+        holder.description.setText(weather.description);
         
         if (weather.iconUri != null)
 			new DownloadImageTask(holder.iconView).execute(weather.iconUri);
@@ -64,6 +67,7 @@ public class CustomListAdapter extends BaseAdapter {
  
     static class ViewHolder {
 		TextView dayView;
+		TextView description;
         TextView infosView;
         ImageView iconView;
     }

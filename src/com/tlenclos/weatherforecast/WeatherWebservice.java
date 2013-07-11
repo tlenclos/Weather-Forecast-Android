@@ -3,6 +3,8 @@ package com.tlenclos.weatherforecast;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -12,7 +14,6 @@ import org.json.JSONObject;
 
 import android.location.Location;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.tlenclos.weatherforecast.HomeTab.FragmentCallback;
 import com.tlenclos.weatherforecast.models.Weather;
@@ -64,7 +65,6 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
         }
 		
 		String response = builder.toString();
-		Log.v("Response", response);
 		
 		return todayWeather ? parseTodayWeather(response) : parseWeekWeather(response);
 	}
@@ -92,6 +92,7 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 				dayWeather.humidity = weatherData.getJSONObject("main").getDouble("humidity");
 				dayWeather.pressure = weatherData.getJSONObject("main").getInt("pressure");
 				dayWeather.windSpeed = weatherData.getJSONObject("wind").getDouble("speed");
+				dayWeather.description = weatherData.getJSONArray("weather").getJSONObject(0).getString("description");
 				dayWeather.iconUri = apiUrlIcon+weatherData.getJSONArray("weather").getJSONObject(0).getString("icon")+".png";
 				dayWeather.isFetched = true;
 			}
@@ -122,7 +123,13 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 				dayWeather.humidity = weatherData.getDouble("humidity");
 				dayWeather.pressure = weatherData.getInt("pressure");
 				dayWeather.windSpeed = weatherData.getDouble("speed");
+				
+				final Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(weatherData.getLong("dt") * 1000);
+				dayWeather.day = cal.getTime();
+				
 				dayWeather.iconUri = apiUrlIcon+weatherData.getJSONArray("weather").getJSONObject(0).getString("icon")+".png";
+				dayWeather.description = weatherData.getJSONArray("weather").getJSONObject(0).getString("description");
 				dayWeather.isFetched = true;
 
 				weathers.add(dayWeather);

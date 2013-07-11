@@ -20,6 +20,7 @@ public class Weather implements Serializable {
 	public double windSpeed;
 	public int pressure;
 	public String iconUri;
+	public String description;
 	public Date day;
 	public boolean isFetched;
 	

@@ -35,6 +35,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	private TextView temperature;
 	private TextView wind;
 	private TextView humidity;
+	private TextView description;
 	private TextView time;
 	private Button changecity;
 	private ImageView icon;
@@ -62,7 +63,8 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
     	time = (TextView) getActivity().findViewById(R.id.time);
     	icon = (ImageView) getActivity().findViewById(R.id.icon);
     	changecity = (Button) getActivity().findViewById(R.id.changecity);
-    	
+    	description = (TextView) getActivity().findViewById(R.id.description);
+    			
     	// Time
     	Time now = new Time();
     	now.setToNow();
@@ -116,7 +118,6 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
  
     public void onTabReselected(Tab tab, FragmentTransaction ft) {
         // TODO Auto-generated method stub
- 
     }
    
 	@Override
@@ -153,6 +154,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 		wind.setText(weather.windSpeed+"km/h");
 		humidity.setText(weather.humidity+"%");
 		date.setText(weather.day.toString());
+		description.setText(weather.description);
 		
 		if (weather.iconUri != null)
 			new DownloadImageTask(icon).execute(weather.iconUri);
