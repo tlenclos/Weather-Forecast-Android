@@ -7,6 +7,7 @@ import android.app.ActionBar.TabListener;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,7 +20,7 @@ public class WeekTab extends Fragment implements TabListener {
     private Fragment mFragment;
     private ListView daysListView;
     private CustomListAdapter adapter;
-    ArrayList<Weather> weathers;
+    static ArrayList<Weather> weathers;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,12 +50,25 @@ public class WeekTab extends Fragment implements TabListener {
     		} else {
     			Toast.makeText(this.getActivity().getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
     		}
+        } else {
+        	Toast.makeText(this.getActivity().getApplicationContext(), "No location", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.v("AppWeather", "Recovering data from instanceState");
+        
+        // TODO : Use a clean way
+        if (weathers != null) {
+        	adapter.notifyDataSetChanged();
         }
     }
     
     public void onTabSelected(Tab tab, FragmentTransaction ft) {
         // TODO Auto-generated method stub
-        mFragment = new WeekTab();
+        mFragment = this;
         // Attach fragment1.xml layout
         ft.add(android.R.id.content, mFragment);
         ft.attach(mFragment);

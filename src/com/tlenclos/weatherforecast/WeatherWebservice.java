@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -16,14 +15,15 @@ import android.location.Location;
 import android.os.AsyncTask;
 
 import com.tlenclos.weatherforecast.HomeTab.FragmentCallback;
+import com.tlenclos.weatherforecast.models.User;
 import com.tlenclos.weatherforecast.models.Weather;
 
 public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>> {
 	private FragmentCallback mFragmentCallback;
 	String apiUrlIcon = "http://openweathermap.org/img/w/";
 	String apiUrlFormat = "http://api.openweathermap.org/data/2.1/find/city?&lat=%f&lon=%f&cnt=1&APPID=5d2eef1e303470228dcf653b4f989499";
-	String apiForecastUrlFormat = "http://api.openweathermap.org/data/2.5/forecast/daily?&lat=%f&lon=%f&APPID=5d2eef1e303470228dcf653b4f989499&units=metric";
-	String apiSearchCityFormat = "http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=5d2eef1e303470228dcf653b4f989499&units=metric";
+	String apiForecastUrlFormat = "http://api.openweathermap.org/data/2.5/forecast/daily?&lat=%f&lon=%f&APPID=5d2eef1e303470228dcf653b4f989499";
+	String apiSearchCityFormat = "http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=5d2eef1e303470228dcf653b4f989499";
 	String apiUrl;
 	Location location;
 	boolean todayWeather;
@@ -31,9 +31,12 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 	
 	public WeatherWebservice(FragmentCallback fragmentCallback, Location location, boolean todayWeather, String citySearch) {
 		mFragmentCallback = fragmentCallback;
-		this.location = location;
 		this.todayWeather = todayWeather;
 		this.citySearch = citySearch;
+		
+		if (location != null) {
+			this.location = User.getInstance().location = location;
+		}
 		
 		if (citySearch != null) {
 			this.apiUrl = String.format(apiSearchCityFormat.toString(), citySearch);
@@ -119,7 +122,7 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 			for(int i=0; i < list.length(); i++) {
 				Weather dayWeather = new Weather();
 				JSONObject weatherData = list.getJSONObject(i);
-				dayWeather.temperature = weatherData.getJSONObject("temp").getDouble("day");
+				dayWeather.temperature = kelvinToCelsius(weatherData.getJSONObject("temp").getDouble("day"));
 				dayWeather.humidity = weatherData.getDouble("humidity");
 				dayWeather.pressure = weatherData.getInt("pressure");
 				dayWeather.windSpeed = weatherData.getDouble("speed");

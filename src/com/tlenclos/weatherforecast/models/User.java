@@ -4,6 +4,7 @@ import android.location.Location;
 
 public class User {
 	public Location location;
+	public Weather dayWeather;
 	
 	private User()
 	{}

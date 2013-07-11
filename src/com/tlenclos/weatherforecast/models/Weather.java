@@ -3,11 +3,6 @@ package com.tlenclos.weatherforecast.models;
 import java.io.Serializable;
 import java.util.Date;
 
-import android.R.bool;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
-
 public class Weather implements Serializable {
 	/**
 	 * 

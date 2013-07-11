@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tlenclos.weatherforecast.models.User;
 import com.tlenclos.weatherforecast.models.Weather;
  
 public class HomeTab extends Fragment implements TabListener, LocationListener {
@@ -39,7 +38,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	private TextView time;
 	private Button changecity;
 	private ImageView icon;
-	private Weather dayWeather;
+	static Weather dayWeather;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +94,12 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
         super.onActivityCreated(savedInstanceState);
         Log.v("AppWeather", "Recovering data from instanceState");
         
+        // TODO : Use a clean way
+        if (dayWeather != null) {
+        	updateUIwithWeather(dayWeather);
+        }
+        
+        // Not working
         if (savedInstanceState != null) {
             // Restore last state for checked position.
             dayWeather = (Weather) savedInstanceState.getSerializable("dayWeather");
@@ -104,7 +109,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
     
     public void onTabSelected(Tab tab, FragmentTransaction ft) {
         // TODO Auto-generated method stub
-        mFragment = new HomeTab();
+    	mFragment = this;
         // Attach fragment1.xml layout
         ft.add(android.R.id.content, mFragment);
         ft.attach(mFragment);
@@ -124,27 +129,28 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
 		Log.v("AppWeather", location.getLatitude() + " - " + location.getLongitude());
-		User.getInstance().location = location;
 		locationManager.removeUpdates(this);
 		
 		// Get weather data
-		if ((MainActivity) this.getActivity() != null && ((MainActivity) this.getActivity()).isOnline()) {
-			Toast.makeText(this.getActivity().getApplicationContext(), "Fetching weather data...", Toast.LENGTH_SHORT).show();
-			
-			WeatherWebservice weatherWS = new WeatherWebservice(new FragmentCallback() {
-	            @Override
-	            public void onTaskDone(ArrayList<Weather> result) {
-	                // Update UI
-	        		if (result.size() > 0 && result.get(0).isFetched) {
-	        			dayWeather = result.get(0);
-	        			// Update UI
-	        			updateUIwithWeather(dayWeather);
-	        		}
-	            }
-	        }, location, true, null);
-			weatherWS.execute();
-		} else {
-			Toast.makeText(this.getActivity().getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
+		if (isAdded()) {
+			if ( ((MainActivity) this.getActivity()).isOnline() ) {
+				Toast.makeText(this.getActivity().getApplicationContext(), "Fetching weather data...", Toast.LENGTH_SHORT).show();
+				
+				WeatherWebservice weatherWS = new WeatherWebservice(new FragmentCallback() {
+		            @Override
+		            public void onTaskDone(ArrayList<Weather> result) {
+		                // Update UI
+		        		if (result.size() > 0 && result.get(0).isFetched) {
+		        			dayWeather = result.get(0);
+		        			// Update UI
+		        			updateUIwithWeather(dayWeather);
+		        		}
+		            }
+		        }, location, true, null);
+				weatherWS.execute();
+			} else {
+				Toast.makeText(this.getActivity().getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 	
