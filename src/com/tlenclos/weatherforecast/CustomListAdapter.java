@@ -54,7 +54,7 @@ public class CustomListAdapter extends BaseAdapter {
  
         Weather weather = listData.get(position);
         holder.dayView.setText(new SimpleDateFormat("EEEE").format(weather.day));
-        holder.infosView.setText(String.format("%.1f°C / %d", weather.temperature, weather.pressure));
+        holder.infosView.setText(String.format("%.1f¡C / %d", weather.temperature, weather.pressure));
         
         if (weather.iconUri != null)
 			new DownloadImageTask(holder.iconView).execute(weather.iconUri);

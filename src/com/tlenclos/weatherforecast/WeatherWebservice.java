@@ -21,8 +21,8 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 	private FragmentCallback mFragmentCallback;
 	String apiUrlIcon = "http://openweathermap.org/img/w/";
 	String apiUrlFormat = "http://api.openweathermap.org/data/2.1/find/city?&lat=%f&lon=%f&cnt=1&APPID=5d2eef1e303470228dcf653b4f989499";
-	String apiForecastUrlFormat = "http://api.openweathermap.org/data/2.5/forecast/daily?&lat=%f&lon=%f&APPID=5d2eef1e303470228dcf653b4f989499";
-	String apiSearchCityFormat = "http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=5d2eef1e303470228dcf653b4f989499";
+	String apiForecastUrlFormat = "http://api.openweathermap.org/data/2.5/forecast/daily?&lat=%f&lon=%f&APPID=5d2eef1e303470228dcf653b4f989499&units=metric";
+	String apiSearchCityFormat = "http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=5d2eef1e303470228dcf653b4f989499&units=metric";
 	String apiUrl;
 	Location location;
 	boolean todayWeather;
@@ -118,7 +118,7 @@ public class WeatherWebservice extends AsyncTask<Void, Void, ArrayList<Weather>>
 			for(int i=0; i < list.length(); i++) {
 				Weather dayWeather = new Weather();
 				JSONObject weatherData = list.getJSONObject(i);
-				dayWeather.temperature = kelvinToCelsius(weatherData.getJSONObject("temp").getDouble("day"));
+				dayWeather.temperature = weatherData.getJSONObject("temp").getDouble("day");
 				dayWeather.humidity = weatherData.getDouble("humidity");
 				dayWeather.pressure = weatherData.getInt("pressure");
 				dayWeather.windSpeed = weatherData.getDouble("speed");

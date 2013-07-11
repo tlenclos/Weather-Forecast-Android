@@ -149,7 +149,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	
 	public void updateUIwithWeather(Weather weather) {
 		city.setText(weather.place);
-		temperature.setText(String.format("%.1f°C", weather.temperature));
+		temperature.setText(String.format("%.1f¡C", weather.temperature));
 		wind.setText(weather.windSpeed+"km/h");
 		humidity.setText(weather.humidity+"%");
 		date.setText(weather.day.toString());
