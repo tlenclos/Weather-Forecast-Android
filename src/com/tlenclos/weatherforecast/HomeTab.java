@@ -1,6 +1,8 @@
 package com.tlenclos.weatherforecast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
@@ -160,7 +162,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 		temperature.setText(String.format("%.1f¡C", weather.temperature));
 		wind.setText(weather.windSpeed+"km/h");
 		humidity.setText(weather.humidity+"%");
-		date.setText(weather.day.toString());
+		date.setText(new SimpleDateFormat("EEEE dd/MM", Locale.getDefault()).format(weather.day));
 		description.setText(weather.description);
 		
 		if (weather.iconUri != null)
