@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:paddingLeft="10dp"
         android:paddingTop="5dp"
-        android:text="City"
+        android:text="@string/label_city"
         android:textSize="24sp" />
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/city"
         android:paddingLeft="10dp"
-        android:text="Date" />
+        android:text="@string/label_date" />
 
     <TextView
         android:id="@+id/temperature"
@@ -35,7 +35,7 @@
         android:layout_alignParentTop="true"
         android:paddingRight="10dp"
         android:paddingTop="5dp"
-        android:text="Temperature"
+        android:text="@string/label_temperature"
         android:textSize="24sp" />
 
     <RelativeLayout
@@ -57,7 +57,7 @@
             android:layout_alignParentTop="true"
             android:paddingLeft="5dp"
             android:paddingTop="5dp"
-            android:text="Wind" />
+            android:text="@string/label_wind" />
 
         <TextView
             android:id="@+id/wind"
@@ -68,7 +68,7 @@
             android:layout_alignParentLeft="true"
             android:paddingBottom="5dp"
             android:paddingLeft="5dp"
-            android:text="0.0km/h" />
+            android:text="@string/label_wind_value" />
 
         <TextView
             style="@style/TextHomeActivity"
@@ -78,7 +78,7 @@
             android:layout_alignParentTop="true"
             android:paddingRight="5dp"
             android:paddingTop="5dp"
-            android:text="Humidity" />
+            android:text="@string/label_humidity" />
 
         <TextView
             android:id="@+id/humidity"
@@ -89,14 +89,16 @@
             android:layout_alignParentRight="true"
             android:paddingBottom="5dp"
             android:paddingRight="5dp"
-            android:text="0%" />
+            android:text="@string/label_humidity_value" />
 
         <ImageView
             android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:contentDescription="@string/image_weather_description"
             android:layout_centerVertical="true" />
+        
     </RelativeLayout>
 
    <TextView
@@ -125,7 +127,6 @@
         android:paddingTop="40dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:text="Time"
         android:textColor="#FFF"
         android:textSize="45sp" />
     
@@ -139,6 +140,6 @@
         android:layout_marginLeft="9dp"
         android:layout_marginRight="9dp"
         android:onClick="askToChangeCity"
-        android:text="Change city" />
+        android:text="@string/btn_changecity" />
 
 </RelativeLayout>

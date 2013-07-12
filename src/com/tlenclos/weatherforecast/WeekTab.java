@@ -16,7 +16,7 @@ import com.tlenclos.weatherforecast.models.User;
 import com.tlenclos.weatherforecast.models.Weather;
  
 public class WeekTab extends Fragment implements TabListener {
- 
+	private static final String TAG = "AppWeather";
     private Fragment mFragment;
     private ListView daysListView;
     private CustomListAdapter adapter;
@@ -36,7 +36,7 @@ public class WeekTab extends Fragment implements TabListener {
         // Get weather data
         if (User.getInstance().location != null) {
     		if (((MainActivity) this.getActivity()).isOnline()) {
-    			Toast.makeText(this.getActivity().getApplicationContext(), "Fetching weather data...", Toast.LENGTH_SHORT).show();
+    			Toast.makeText(this.getActivity().getApplicationContext(), getResources().getString(R.string.fetching_data), Toast.LENGTH_SHORT).show();
     			
     			WeatherWebservice weatherWS = new WeatherWebservice(new FragmentCallback() {
     	            @Override
@@ -48,17 +48,17 @@ public class WeekTab extends Fragment implements TabListener {
     	        }, User.getInstance().location, false, null);
     			weatherWS.execute();
     		} else {
-    			Toast.makeText(this.getActivity().getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
+    			Toast.makeText(this.getActivity().getApplicationContext(), getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
     		}
         } else {
-        	Toast.makeText(this.getActivity().getApplicationContext(), "No location", Toast.LENGTH_SHORT).show();
+        	Toast.makeText(this.getActivity().getApplicationContext(), getResources().getString(R.string.no_location), Toast.LENGTH_SHORT).show();
         }
     }
     
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.v("AppWeather", "Recovering data from instanceState");
+        Log.v(TAG, "Recovering data from instanceState");
         
         // TODO : Use a clean way
         if (weathers != null) {

@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.tlenclos.weatherforecast.models.Weather;
  
 public class HomeTab extends Fragment implements TabListener, LocationListener {
+	private static final String TAG = "AppWeather";
     private Fragment mFragment;
 	private LocationManager locationManager;
 	private TextView city;
@@ -82,7 +83,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
     
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.v("AppWeather", "Saving instanceState");
+        Log.v(TAG, "Saving instanceState");
         
         if (dayWeather != null) {
         	outState.putSerializable("dayWeather", dayWeather);
@@ -92,7 +93,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.v("AppWeather", "Recovering data from instanceState");
+        Log.v(TAG, "Recovering data from instanceState");
         
         // TODO : Use a clean way
         if (dayWeather != null) {
@@ -128,13 +129,13 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
-		Log.v("AppWeather", location.getLatitude() + " - " + location.getLongitude());
+		Log.v(TAG, location.getLatitude() + " - " + location.getLongitude());
 		locationManager.removeUpdates(this);
 		
 		// Get weather data
 		if (isAdded()) {
 			if ( ((MainActivity) this.getActivity()).isOnline() ) {
-				Toast.makeText(this.getActivity().getApplicationContext(), "Fetching weather data...", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this.getActivity().getApplicationContext(), getResources().getString(R.string.fetching_data), Toast.LENGTH_SHORT).show();
 				
 				WeatherWebservice weatherWS = new WeatherWebservice(new FragmentCallback() {
 		            @Override
@@ -149,7 +150,7 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 		        }, location, true, null);
 				weatherWS.execute();
 			} else {
-				Toast.makeText(this.getActivity().getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this.getActivity().getApplicationContext(), getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -169,20 +170,20 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
 	public void askToChangeCity() {
 	  	AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
 
-    	alert.setTitle("Search");
-    	alert.setMessage("Write a town to display his weather");
+    	alert.setTitle(getResources().getString(R.string.alert_search_title));
+    	alert.setMessage(getResources().getString(R.string.alert_search_message));
 
     	// Set an EditText view to get user input 
     	final EditText input = new EditText(this.getActivity());
     	alert.setView(input);
 
-    	alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+    	alert.setPositiveButton(getResources().getString(R.string.alert_search_validate), new DialogInterface.OnClickListener() {
     		public void onClick(DialogInterface dialog, int whichButton) {
     			Editable value = input.getText();
     			
     			// Get weather data
     			if (((MainActivity) getActivity()).isOnline()) {
-    				Toast.makeText(getActivity().getApplicationContext(), "Fetching weather data...", Toast.LENGTH_SHORT).show();
+    				Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.fetching_data), Toast.LENGTH_SHORT).show();
     				
     				WeatherWebservice weatherWS = new WeatherWebservice(new FragmentCallback() {
     		            @Override
@@ -197,12 +198,12 @@ public class HomeTab extends Fragment implements TabListener, LocationListener {
     		        }, null, true, value.toString());
     				weatherWS.execute();
     			} else {
-    				Toast.makeText(getActivity().getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
+    				Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
     			}
     		}
     	});
 
-    	alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+    	alert.setNegativeButton(getResources().getString(R.string.alert_search_cancel), new DialogInterface.OnClickListener() {
     	  public void onClick(DialogInterface dialog, int whichButton) {
     	    // Canceled.
     	  }

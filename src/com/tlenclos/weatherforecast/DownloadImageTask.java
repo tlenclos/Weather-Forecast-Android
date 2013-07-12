@@ -8,9 +8,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
-public class DownloadImageTask extends AsyncTask<String, Void, Bitmap>
-{
-	private static final String TAG = "DownloadImageTask";
+public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+	  private static final String TAG = "AppWeather";
 	  ImageView imageView;
 
 	  public DownloadImageTask(ImageView imageView)

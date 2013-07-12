@@ -7,7 +7,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
@@ -25,13 +24,13 @@ public class MainActivity extends Activity {
  
         // Create first Tab
         tab = actionBar.newTab().setTabListener(new HomeTab());
-        tab.setText("Today");
+        tab.setText(getResources().getString(R.string.tab_today));
         actionBar.addTab(tab);
  
         // Create Second Tab
         tab = actionBar.newTab().setTabListener(new WeekTab());
         // Set Tab Title
-        tab.setText("Week");
+        tab.setText(getResources().getString(R.string.tab_week));
         actionBar.addTab(tab);
 	}
 	
@@ -43,7 +42,6 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		Log.v("AppWeather", "Starting app");
 	}
 
 	public boolean isOnline() {
